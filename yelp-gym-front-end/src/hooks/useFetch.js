@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react'
 
 const useFetch = (url, method, headers) => {
 
-    const [data, setData] = useState(null);
+    const [data, setData] = useState('');
     const [isPending, setPending] = useState(true);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState('');
 
 
     const abortCont = new AbortController();
