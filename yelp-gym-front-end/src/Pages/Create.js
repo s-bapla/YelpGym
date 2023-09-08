@@ -42,7 +42,7 @@ const Create = () => {
         } catch (e) {
             console.log('There was an error:', e.message);
             
-            setErr("Price must be a number");
+            setErr(e.message);
             const form = document.querySelector('.needs-validation');
             form.classList.remove('was-validated') 
             

@@ -95,13 +95,13 @@ const Edit = () => {
             const gymData = { name: gym.name, location: gym.location, price: gym.price, description: gym.description, image: gym.image };
             const res = await fetch('http://localhost:8000/gyms/' + id, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(gymData) });
             if (!res.ok) {
-                error = await res.json()
+                const error = await res.json()
                 throw new Error(error.message || "UNKNOWN ERROR")
             }
             history.push('/gyms');
         } catch (e) {
             console.log('There was an error:', e.message);
-            setValidationError("Price must be a number");
+            setValidationError(e.message);
             const form = document.querySelector('.needs-validation');
             form.classList.remove('was-validated')
         }
