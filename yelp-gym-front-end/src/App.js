@@ -9,28 +9,31 @@ function App() {
   return (
     <Router>
       <div className='d-flex flex-column vh-100'>
-      <Navbar/>
-      <div className='container mt-5'>
-        <Switch>
-          <Route path='/gyms/:id/edit'>
-            <Edit />
-          </Route>
-          <Route path="/gyms/:id/view">
-            <Show/>
-          </Route>
-          <Route path='/create'>
-            <Create/>
-          </Route>   
-          <Route path='/gyms'>
-            <Gyms/>
-          </Route>
-          <Route path='/'>
-            <h1>Home</h1>
-          </Route>
-        </Switch>
+        <Navbar />
+        <div className='container mt-5'>
+          <Switch>
+            <Route path='/gyms/:id/edit'>
+              <Edit />
+            </Route>
+            <Route path="/gyms/:id/view">
+              <Show />
+            </Route>
+            <Route path='/create'>
+              <Create />
+            </Route>
+            <Route path='/gyms'>
+              <Gyms />
+            </Route>
+            <Route path='/Home'>
+              <h1>Home</h1>
+            </Route>
+            <Route>
+              <h1>404 Not Found</h1>
+            </Route>
+          </Switch>
+        </div>
+        <Footer />
       </div>
-      <Footer/>
-    </div>
     </Router>
   );
 }

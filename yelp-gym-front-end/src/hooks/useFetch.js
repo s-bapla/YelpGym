@@ -7,26 +7,29 @@ const useFetch = (url, method, headers) => {
     const [error, setError] = useState('');
 
 
-    const abortCont = new AbortController();
-    async function fetchAllGyms() {
-        const res = await fetch(url, {
-            method: method,
-            headers: headers,
-            signal: abortCont.signal
-        });
-        return await res.json();
-    }
+    
+
 
     useEffect(() => {
 
-
-        async function doStuff() {
+        const abortCont = new AbortController();
+        async function fetchData() {
             try {
-                const gyms = await fetchAllGyms();
+                const res = await fetch(url, {
+                    method: method,
+                    headers: headers,
+                    signal: abortCont.signal
+                });
+                
+                const gyms = await res.json();
+
+                if (!res.ok) {
+                    throw new Error(gyms.message || "unknow error");
+                }
                 setData(gyms);
                 setPending(false)
                 setError(null)
-                return () => { abortCont.abort() };
+                
             }
             catch (e) {
                 if (e.name === 'AbortError') {
@@ -41,8 +44,8 @@ const useFetch = (url, method, headers) => {
                 }
             }
         }
-        doStuff();
-        
+        fetchData();
+        return () => { abortCont.abort() };
 
     }, [url]);
 

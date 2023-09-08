@@ -22,4 +22,3 @@ const gymSchema = new Schema({
 })
 
 module.exports = mongoose.model('Gym', gymSchema)
-console.log(module.exports)
