@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Review = require('./ReviewModel');
 
 mongoose.connect('mongodb://127.0.0.1:27017/YelpGym', {
     useNewUrlParser: true,
@@ -11,14 +12,24 @@ mongoose.connect('mongodb://127.0.0.1:27017/YelpGym', {
         console.log('ERROR:', e);
     });
 
-const Schema = mongoose.Schema
+const Schema = mongoose.Schema;
 
 const gymSchema = new Schema({
     name: String,
     image: String,
     price: Number,
     description: String,
-    location: String
+    location: String,
+    reviews: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Review'
+    }]
+});
+
+gymSchema.post('findOneAndDelete', async function (doc) {
+    if (doc) {
+        await Review.deleteMany({_id: {$in: doc.reviews}});
+    }
 })
 
-module.exports = mongoose.model('Gym', gymSchema)
+module.exports = mongoose.model('Gym', gymSchema);

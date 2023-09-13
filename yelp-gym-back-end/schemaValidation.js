@@ -7,3 +7,8 @@ module.exports.gymSchema = joi.object({
     image: joi.string().required(),
     price: joi.number().required().min(0)
 });
+
+module.exports.reviewSchema = joi.object({
+    body: joi.string().required(),
+    rating: joi.number().required().min(0).max(5)
+})

@@ -1,9 +1,10 @@
 const express = require('express');
-const Gym = require('./Model');
+const Gym = require('./models/GymsModel');
 const cors = require('cors');
 const app = express();
 const err = require('./util/error');
-const {gymSchema} = require('./schema.js');
+const { gymSchema, reviewSchema } = require('./schemaValidation.js');
+const Review = require('./models/ReviewModel');
 
 
 
@@ -15,9 +16,21 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.json());
 
-function validateSchema(req, res, next) {
+function validateGymSchema(req, res, next) {
     const { error } = gymSchema.validate(req.body);
 
+    if (error) {
+        const msg = error.details.map((item) => {
+            return item.message
+        }).join(',');
+        throw new err(msg, 400)
+    } else {
+        next();
+    }
+}
+
+function validateReviewSchema(req, res, next) {
+    const { error } = reviewSchema.validate(req.body);
     if (error) {
         const msg = error.details.map((item) => {
             return item.message
@@ -44,7 +57,7 @@ app.get('/gyms/:id', async (req, res, next) => {
 
     try {
         const { id } = req.params;
-        const gym = await Gym.findById(id);
+        const gym = await Gym.findById(id).populate('reviews');
         res.send(gym)
     }
     catch (e) {
@@ -53,7 +66,7 @@ app.get('/gyms/:id', async (req, res, next) => {
 
 });
 
-app.post('/gyms', validateSchema, async (req, res, next) => {
+app.post('/gyms', validateGymSchema, async (req, res, next) => {
 
     try {
         const gym = new Gym(req.body)
@@ -65,7 +78,7 @@ app.post('/gyms', validateSchema, async (req, res, next) => {
 
 });
 
-app.put('/gyms/:id', validateSchema, async (req, res, next) => {
+app.put('/gyms/:id', validateGymSchema, async (req, res, next) => {
 
 
     try {
@@ -89,6 +102,33 @@ app.delete('/gyms/:id', async (req, res, next) => {
     }
 
 });
+
+
+
+app.post('/gyms/:id/reviews', validateReviewSchema, async (req, res, next) => {
+    try {
+        const review = new Review(req.body);
+        const gym = await Gym.findById(req.params.id);
+        gym.reviews.push(review);
+        await review.save();
+        await gym.save();
+        res.send({reviewId: review._id, body: review.body, rating: review.rating})
+    } catch (e) {
+        next(e)
+    }
+
+})
+
+app.delete('/gyms/:id/reviews/:reviewId', async (req, res, next) => {
+    try {
+        const { id, reviewId } = req.params;
+        await Gym.findByIdAndUpdate(id, {$pull: {reviews: reviewId}});
+        await Review.findByIdAndDelete(reviewId);
+        res.status(203).send();
+    } catch(e) {
+        next(e);
+    }
+})
 
 app.use((err, req, res, next) => {
     const statusCode = err.statusCode || 500;
