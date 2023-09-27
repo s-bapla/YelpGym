@@ -7,7 +7,7 @@ const { gymSchema, reviewSchema } = require('./schemaValidation.js');
 const Review = require('./models/ReviewModel');
 
 
-
+comment
 
 app.use(cors());
 
@@ -112,7 +112,7 @@ app.post('/gyms/:id/reviews', validateReviewSchema, async (req, res, next) => {
         gym.reviews.push(review);
         await review.save();
         await gym.save();
-        res.send({reviewId: review._id, body: review.body, rating: review.rating})
+        res.send({_id: review._id, body: review.body, rating: review.rating})
     } catch (e) {
         next(e)
     }

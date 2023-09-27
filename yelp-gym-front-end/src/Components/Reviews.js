@@ -30,12 +30,14 @@ const Reviews = ({ gym }) => {
         
         try{
             e.preventDefault();
+            
             const response = await fetch('http://localhost:8000/gyms/' + gym._id + '/reviews/' + reviewId, {method: 'DELETE'});
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.message || 'Unknown error');
             }
             setReviews(reviews => reviews.filter((item) => {return item._id !== reviewId}))
+
         } catch(e) {
             setReviewError(e.message)
         }
@@ -59,6 +61,7 @@ const Reviews = ({ gym }) => {
                 throw new Error(errorData.message || 'Unknown error');
             }
             const data = await response.json();
+            console.log(data)
             setReviews(prevData => [...prevData, data]);
             setReviewError('')
         } catch (e) {
@@ -82,9 +85,9 @@ const Reviews = ({ gym }) => {
                         <h2>Leave a Review</h2>
                         <div className="mb-3">
                             <label className="form-label">Rating:</label>
-                            <input onChange={e => setRating(e.target.value)} name={rating} type="range" min='1' max='5' className='form-control' required value={rating}/>
+                            <input onChange={e => setRating(e.target.value)} name='rating' type="range" min='1' max='5' className='form-control' required value={rating}/>
                             <label className="form-label">Review:</label>
-                            <textarea onChange={e => setReview(e.target.value)} name={review} cols="30" rows="4" className='form-control mb-3' required></textarea>
+                            <textarea onChange={e => setReview(e.target.value)} name='review' cols="30" rows="4" className='form-control mb-3' required></textarea>
                             <button className='btn btn-success' type="submit">Submit Review</button>
                         </div>
                     </form>

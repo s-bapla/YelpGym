@@ -5,6 +5,7 @@ import Gyms from './Pages/Gyms';
 import Create from './Pages/Create'
 import Show from './Pages/Show';
 import Edit from './Pages/Edit'
+
 function App() {
   return (
     <Router>

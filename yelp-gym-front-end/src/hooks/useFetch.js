@@ -40,7 +40,7 @@ const useFetch = (url, method, headers) => {
                 else {
                     setPending(false);
                     setError(e.message);
-                    console.log(e);
+                    
                 }
             }
         }
